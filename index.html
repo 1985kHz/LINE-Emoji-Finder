@@ -370,7 +370,7 @@ footer{
         </svg>
       </button>
     </div>
-    <p class="search-sub" id="searchSub">OCRで抽出したテキストをリアルタイム検索します</p>
+    <p class="search-sub" id="searchSub">OCRで抽出したテキストをリアルタイム検索します / Searches OCR-extracted text in real time</p>
   </div>
 
   <div class="results-card">
@@ -410,7 +410,7 @@ footer{
     </div>
   </div>
 
-  <footer>絵文字をクリックするとLINE STOREの購入ページへ移動します</footer>
+  <footer>絵文字をクリックするとLINE STOREの購入ページへ移動します / Click an emoji to visit its LINE STORE page</footer>
 </main>
 
 <script>
@@ -523,11 +523,11 @@ function render(results) {
       grid.style.display = 'none';
       grid.replaceChildren();
     });
-    sub.textContent = '一致する絵文字が見つかりませんでした';
+    sub.textContent = '一致する絵文字が見つかりませんでした / No emoji found';
     return;
   }
 
-  sub.textContent = results.length + ' 件ヒット';
+  sub.textContent = results.length + ' HIT';
 
   // Build fragment before touching DOM height
   const STAGGER = 48, MAX_DELAY = 700;
@@ -568,7 +568,7 @@ function reset() {
     grid.style.display = 'none';
     grid.replaceChildren();
   });
-  sub.textContent = 'OCRで抽出したテキストをリアルタイム検索します';
+  sub.textContent = 'OCRで抽出したテキストをリアルタイム検索します / Searches OCR-extracted text in real time';
 }
 
 let timer = null;
