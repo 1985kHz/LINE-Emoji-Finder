@@ -328,7 +328,7 @@ footer{
 </style>
 </head>
 <body>
-<a href="#main" class="sr-only">メインへスキップ</a>
+<!-- <a href="#main" class="sr-only">メインへスキップ</a> -->
 
 <header>
   <div class="header-inner">
@@ -362,9 +362,9 @@ footer{
         id="searchInput"
         placeholder="OK、Good、!、z、おやすみ、笑　…"
         autocomplete="off" spellcheck="false"
-        aria-label="絵文字キーワード検索"
+        aria-label="Emoji Keyword Search"
       >
-      <button class="s-clear" id="searchClear" aria-label="クリア" tabindex="-1">
+      <button class="s-clear" id="searchClear" aria-label="Clear" tabindex="-1">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
           <path d="M18 6 6 18M6 6l12 12"/>
         </svg>
@@ -384,7 +384,7 @@ footer{
           </svg>
         </div>
         <div class="state-label">
-          <span class="state-ja">キーワードを入力してください</span>
+          <!-- <span class="state-ja">キーワードを入力してください</span> -->
           <span class="state-en">Enter a keyword to search</span>
         </div>
       </div>
@@ -399,7 +399,7 @@ footer{
           </svg>
         </div>
         <div class="state-label">
-          <span class="state-ja">見つかりませんでした</span>
+          <!-- <span class="state-ja">見つかりませんでした</span> -->
           <span class="state-en">No results found</span>
         </div>
       </div>
@@ -452,7 +452,7 @@ footer{
         </svg>
       </div>
       <div class="state-label">
-        <span class="state-ja">JSONの読み込みに失敗しました</span>
+        <!-- <span class="state-ja">JSONの読み込みに失敗しました</span> -->
         <span class="state-en">Failed to load ocr_result.json</span>
       </div>`;
     console.error('ocr_result.json load error:', e);
