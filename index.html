@@ -312,12 +312,46 @@ header{
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-3);
 }
 
-/* FOOTER */
-footer{
-  text-align:center;font-size:0.6875rem;font-weight:300;
-  color:var(--text-3);letter-spacing:0.02em;
-  padding:0.375rem 1.5rem 1.25rem;
+/* FOOTER — replaced by .site-footer */
+footer{display:none}
+
+/* EXPERIMENTAL BADGE */
+.header-left{grid-column:1;justify-self:start}
+.exp-badge{
+  display:inline-flex;align-items:center;gap:0.25rem;
+  font-size:0.5625rem;font-weight:600;letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:var(--text-3);
+  background:var(--accent-soft);
+  border:1px solid rgba(128,128,128,0.20);
+  border-radius:var(--r-full);
+  padding:0.125rem 0.5rem;
+  line-height:1.4;
+  vertical-align:middle;
+  user-select:none;
 }
+
+/* SITE FOOTER */
+.site-footer{
+  text-align:center;
+  padding:0.5rem 1.5rem 1.5rem;
+  display:flex;flex-direction:column;gap:0.375rem;
+  align-items:center;
+}
+.site-footer-hint{
+  font-size:0.6875rem;font-weight:300;
+  color:var(--text-3);letter-spacing:0.02em;
+}
+.x-link{
+  display:inline-flex;align-items:center;gap:0.3125rem;
+  font-size:0.625rem;font-weight:400;
+  color:var(--text-3);letter-spacing:0.02em;
+  text-decoration:none;
+  opacity:0.55;
+  transition:opacity var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.x-link:hover{opacity:1;color:var(--text-2)}
+.x-link svg{flex-shrink:0;}
 
 /* RESPONSIVE */
 @media(max-width:600px){
@@ -338,10 +372,18 @@ footer{
 
 <header>
   <div class="header-inner">
-    <div></div>
-    <a href="#" class="header-logo" aria-label="LINE EMOJI FINDER">
+    <div class="header-left">
+      <span class="exp-badge" title="This is an experimental prototype">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 3h6M9 3v8l-4 9h14l-4-9V3"/>
+          <path d="M9 11h6"/>
+        </svg>
+        Experimental
+      </span>
+    </div>
+    <div class="header-logo">
       <span class="logo-name">LINE EMOJI FINDER</span>
-    </a>
+    </div>
     <div class="header-right">
       <button class="icon-btn" data-theme-toggle aria-label="to dark mode">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -414,7 +456,15 @@ footer{
     </div>
   </div>
 
-  <footer>Click an emoji to visit its LINE STORE page</footer>
+  <div class="site-footer">
+    <span class="site-footer-hint"></span>
+    <a href="https://x.com/__kHz__" class="x-link" target="_blank" rel="noopener noreferrer" aria-label="Author's X profile">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.263 5.634zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      @__kHz__
+    </a>
+  </div>
 </main>
 
 <script>
@@ -456,7 +506,7 @@ footer{
         </svg>
       </div>
       <div class="state-label">
-        <span class="state-en">Failed to load ocr_result.json</span>
+        <span class="state-en">Failed to load json</span>
       </div>`;
     console.error('ocr_result.json load error:', e);
     return;
