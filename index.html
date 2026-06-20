@@ -93,7 +93,7 @@ html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll
 body{
   min-height:100dvh;
   font-family:var(--font);
-  font-size:clamp(0.875rem,0.84rem+0.2vw,1rem);
+  font-size:clamp(1rem,0.84rem+0.2vw,1rem);
   color:var(--text);
   background:var(--bg);
   background-image:
@@ -179,7 +179,7 @@ header{
   width:100%;
   padding:0.8125rem 2.75rem 0.8125rem 2.75rem;
   font-family:var(--font);
-  font-size:max(16px,clamp(0.875rem,0.84rem+0.2vw,1rem));
+  font-size:clamp(1rem,0.84rem+0.2vw,1rem);
   font-weight:400;
   background:var(--inp-bg);
   border:1px solid var(--inp-border);
@@ -228,8 +228,7 @@ header{
   border-radius:var(--r-2xl);
   box-shadow:var(--sh-glass);
   overflow:hidden;
-  /* transition:height 0.44s cubic-bezier(0.4,0,0.2,1); */
-  transition: height 0.6s cubic-bezier(0.16,1,0.3,1);
+  transition:height 0.6s cubic-bezier(0.16,1,0.3,1);
 }
 /* height animation wrapper */
 
@@ -326,10 +325,16 @@ footer{
   .emoji-grid{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:0.5rem}
   .header-inner{padding:0.75rem 1rem}
 }
+
+/* iOS auto-zoom fix: input font-size must be >= 16px */
+@supports (-webkit-touch-callout: none) {
+  .search-input {
+    font-size: 16px;
+  }
+}
 </style>
 </head>
 <body>
-<!-- <a href="#main" class="sr-only">メインへスキップ</a> -->
 
 <header>
   <div class="header-inner">
@@ -338,7 +343,7 @@ footer{
       <span class="logo-name">LINE EMOJI FINDER</span>
     </a>
     <div class="header-right">
-      <button class="icon-btn" data-theme-toggle aria-label="ダークモードへ">
+      <button class="icon-btn" data-theme-toggle aria-label="to dark mode">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="5"/>
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
@@ -371,7 +376,7 @@ footer{
         </svg>
       </button>
     </div>
-    <p class="search-sub" id="searchSub">OCRで抽出したテキストをリアルタイム検索します / Searches OCR-extracted text in real time</p>
+    <p class="search-sub" id="searchSub">Searches OCR-extracted text in real time</p>
   </div>
 
   <div class="results-card">
@@ -385,7 +390,6 @@ footer{
           </svg>
         </div>
         <div class="state-label">
-          <!-- <span class="state-ja">キーワードを入力してください</span> -->
           <span class="state-en">Enter a keyword to search</span>
         </div>
       </div>
@@ -400,7 +404,6 @@ footer{
           </svg>
         </div>
         <div class="state-label">
-          <!-- <span class="state-ja">見つかりませんでした</span> -->
           <span class="state-en">No results found</span>
         </div>
       </div>
@@ -411,7 +414,7 @@ footer{
     </div>
   </div>
 
-  <footer>絵文字をクリックするとLINE STOREの購入ページへ移動します / Click an emoji to visit its LINE STORE page</footer>
+  <footer>Click an emoji to visit its LINE STORE page</footer>
 </main>
 
 <script>
@@ -431,7 +434,7 @@ footer{
       t = t === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', t);
       btn.innerHTML = t === 'dark' ? SUN : MOON;
-      btn.setAttribute('aria-label', t === 'dark' ? 'ライトモードへ' : 'ダークモードへ');
+      btn.setAttribute('aria-label', t === 'dark' ? 'to light mode' : 'to dark mode');
     });
   }
 })();
@@ -453,7 +456,6 @@ footer{
         </svg>
       </div>
       <div class="state-label">
-        <!-- <span class="state-ja">JSONの読み込みに失敗しました</span> -->
         <span class="state-en">Failed to load ocr_result.json</span>
       </div>`;
     console.error('ocr_result.json load error:', e);
@@ -524,7 +526,7 @@ function render(results) {
       grid.style.display = 'none';
       grid.replaceChildren();
     });
-    sub.textContent = '一致する絵文字が見つかりませんでした / No emoji found';
+    sub.textContent = 'No emoji found';
     return;
   }
 
@@ -569,7 +571,7 @@ function reset() {
     grid.style.display = 'none';
     grid.replaceChildren();
   });
-  sub.textContent = 'OCRで抽出したテキストをリアルタイム検索します / Searches OCR-extracted text in real time';
+  sub.textContent = 'Searches OCR-extracted text in real time';
 }
 
 let timer = null;
