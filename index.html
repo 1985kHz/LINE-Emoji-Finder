@@ -377,12 +377,8 @@ footer{display:none}
   }
 }
 
-/* ═══════════════════════════════════════════════
-   ENHANCEMENT LAYER
-   ═══════════════════════════════════════════════ */
-html.theme-switching *,
-html.theme-switching *::before,
-html.theme-switching *::after {
+/* ═══ ENHANCEMENT LAYER ═══ */
+html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after {
   transition: color .80s cubic-bezier(0.4,0,0.2,1), background-color .80s cubic-bezier(0.4,0,0.2,1), background .80s cubic-bezier(0.4,0,0.2,1), border-color .80s cubic-bezier(0.4,0,0.2,1), box-shadow .80s cubic-bezier(0.4,0,0.2,1), opacity .80s cubic-bezier(0.4,0,0.2,1) !important;
 }
 html.theme-switching .orb, html.theme-switching .starfield,
@@ -411,7 +407,6 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 @keyframes breathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.88)} }
 .search-sub { transition:opacity .18s ease,transform .18s cubic-bezier(0.16,1,0.3,1) !important; }
 .search-sub.morph-out { opacity:0;transform:translateY(4px); }
-/* emoji-card: grid 1fr で幅は自動。aspect-ratio:1 で正方形維持 */
 .emoji-card { overflow:hidden; aspect-ratio:1; width:auto; height:auto;
   transition:transform .32s cubic-bezier(0.16,1,0.3,1),box-shadow .32s cubic-bezier(0.16,1,0.3,1),background .32s cubic-bezier(0.16,1,0.3,1),filter .32s ease !important; }
 .emoji-card::before { display:none !important; }
@@ -420,8 +415,10 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 .emoji-card:active { transform:translateY(-1px) scale(1.02) !important; }
 .emoji-card img { width:100%;height:100%;object-fit:contain;padding:0.5rem; transition:transform .35s cubic-bezier(0.16,1,0.3,1) !important; }
 .emoji-card:hover img { transform:scale(1.06) translateY(-2px) !important; }
-/* grid は JS で設定。CSS !important は初期値のみ */
-#emojiGrid { display:grid !important; grid-template-columns:repeat(11,1fr) !important; gap:0.4rem !important; }
+#emojiGrid { display:grid !important; }
+#emojiGrid[data-size="sm"] { grid-template-columns:repeat(14,1fr) !important; gap:0.3rem !important; }
+#emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(11,1fr) !important; gap:0.4rem !important; }
+#emojiGrid[data-size="lg"] { grid-template-columns:repeat(8,1fr) !important; gap:0.375rem !important; }
 @keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .results-card { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .10s both; }
 .site-footer  { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .18s both; }
@@ -448,8 +445,10 @@ header,.page{position:relative;z-index:1}
 .size-btn:hover { background:var(--surface);transform:scale(1.10); } .size-btn:active { transform:scale(.88); }
 .size-btn.active { background:var(--primary-dim);color:var(--primary); }
 </style>
+
 </head>
 <body>
+
 <div class="fluid-orbs" aria-hidden="true">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -573,7 +572,7 @@ header,.page{position:relative;z-index:1}
   const SUN  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
   const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
   let t = root.getAttribute('data-theme') || 'light';
-  if(btn) {
+  if(btn){
     btn.innerHTML = t === 'dark' ? SUN : MOON;
     btn.addEventListener('click', () => {
       root.classList.add('theme-switching');
@@ -589,177 +588,149 @@ header,.page{position:relative;z-index:1}
 })();
 
 // SEARCH
-(async function() {
-
-  // ── JSON load ──
+(async function(){
   let data;
   try {
     const res = await fetch('./ocr_result.json');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     data = await res.json();
   } catch(e) {
-    document.getElementById('stateInitial').innerHTML = `
-      <div class="state-icon" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-      </div>
-      <div class="state-label">
-        <span class="state-en">Failed to load json</span>
-      </div>`;
-    console.error('ocr_result.json load error:', e);
+    document.getElementById('stateInitial').innerHTML = '<div class="state-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="state-label"><span class="state-en">Failed to load json</span></div>';
+    console.error('ocr_result.json load error', e);
     return;
   }
 
-const inp  = document.getElementById('searchInput');
-const clr  = document.getElementById('searchClear');
-const sub  = document.getElementById('searchSub');
-const grid = document.getElementById('emojiGrid');
-const si   = document.getElementById('stateInitial');
-const se   = document.getElementById('stateEmpty');
-const rb   = document.getElementById('resultsBody');
-const card = rb.closest('.results-card');
+  const inp  = document.getElementById('searchInput');
+  const clr  = document.getElementById('searchClear');
+  const sub  = document.getElementById('searchSub');
+  const grid = document.getElementById('emojiGrid');
+  const si   = document.getElementById('stateInitial');
+  const se   = document.getElementById('stateEmpty');
+  const rb   = document.getElementById('resultsBody');
+  const card = rb.closest('.results-card');
 
-// Animate results-card height smoothly in both directions
-function animateHeight(updateFn) {
-  // 1. Lock current height (px) and disable transition
-  const fromH = card.scrollHeight;
-  card.style.transition = 'none';
-  card.style.height = fromH + 'px';
-  card.getBoundingClientRect(); // flush
-
-  // 2. Apply DOM changes while height is locked
-  updateFn();
-
-  // 3. Measure the NEW natural height by temporarily releasing the lock
-  card.style.height = '';          // release to auto
-  const toH = card.scrollHeight;  // read true target height
-  card.style.height = fromH + 'px'; // re-lock at old height
-  card.getBoundingClientRect(); // flush again
-
-  // 4. Enable transition and animate to target
-  card.style.transition = '';
-  requestAnimationFrame(() => {
-    card.style.height = toH + 'px';
-    card.addEventListener('transitionend', () => {
-      card.style.height = '';   // release to auto for responsiveness
-      card.style.transition = '';
-    }, { once: true });
-  });
-}
-
-const ERR = `<div class="emoji-err" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>`;
-
-function search(q) {
-  const t = q.trim().toLowerCase();
-  if(!t) return [];
-  const res = [];
-  for(const [setId, set] of Object.entries(data.emoji_sets)) {
-    for(const [imgId, img] of Object.entries(set.images)) {
-      const ft = (img.full_text||'').toLowerCase();
-      if(ft && ft.includes(t)) res.push({
-        label: img.full_text,
-        imgUrl:`https://stickershop.line-scdn.net/sticonshop/v1/sticon/${setId}/iPhone/${imgId}.png`,
-        href:  `https://store.line.me/emojishop/product/${setId}/ja`
+  function animateHeight(updateFn) {
+    card.style.transition = 'none';
+    const fromH = card.scrollHeight;
+    card.style.height = fromH + 'px';
+    card.getBoundingClientRect();
+    updateFn();
+    card.style.height = '';
+    const toH = card.scrollHeight;
+    card.style.height = fromH + 'px';
+    card.getBoundingClientRect();
+    card.style.transition = '';
+    requestAnimationFrame(() => {
+      card.style.height = toH + 'px';
+      const cleanup = () => { card.style.height = ''; card.style.transition = ''; };
+      let done = false;
+      const guard = setTimeout(() => { if(!done){ done=true; cleanup(); } }, 700);
+      card.addEventListener('transitionend', function h(){
+        if(!done){ done=true; clearTimeout(guard); cleanup(); }
+        card.removeEventListener('transitionend', h);
       });
-    }
+    });
   }
-  return res;
-}
 
-function render(results) {
-  if(!results.length) {
+  const ERR = '<div class="emoji-err" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>';
+
+  window._emojiSearch = function(q) {
+    const t = q.trim().toLowerCase();
+    if(!t) return [];
+    const res = [];
+    for(const [setId, set] of Object.entries(data.emoji_sets)){
+      for(const [imgId, img] of Object.entries(set.images)){
+        const ft = img.full_text.toLowerCase();
+        if(ft && ft.includes(t)){
+          res.push({
+            label:  img.full_text,
+            imgUrl: `https://stickershop.line-scdn.net/sticonshop/v1/sticon/${setId}/iPhone/${imgId}.png`,
+            href:   `https://store.line.me/emojishop/product/${setId}/ja`
+          });
+        }
+      }
+    }
+    return res;
+  };
+
+  window._emojiRender = function(results) {
+    if(!results.length){
+      animateHeight(() => {
+        si.style.display = 'none';
+        se.style.display = 'flex';
+        grid.style.display = 'none';
+        grid.replaceChildren();
+      });
+      sub.textContent = 'No emoji found';
+      return;
+    }
+    sub.textContent = results.length + ' HIT';
+    const STAGGER = 48, MAXDELAY = 700;
+    const frag = document.createDocumentFragment();
+    results.forEach((r, i) => {
+      const delay = Math.min(i * STAGGER, MAXDELAY);
+      const a = document.createElement('a');
+      a.className = 'emoji-card';
+      a.href = r.href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.setAttribute('aria-label', (r.label||'絵文字') + ' — LINE STOREで購入');
+      a.style.animationDelay = delay + 'ms';
+      const img = document.createElement('img');
+      img.src = r.imgUrl; img.alt = r.label||'';
+      img.width = 80; img.height = 80;
+      img.loading = 'lazy'; img.decoding = 'async';
+      img.onerror = function(){ a.innerHTML = ERR; };
+      a.appendChild(img);
+      if(r.label){
+        const lbl = document.createElement('span');
+        lbl.className = 'emoji-lbl'; lbl.textContent = r.label;
+        a.appendChild(lbl);
+      }
+      frag.appendChild(a);
+    });
     animateHeight(() => {
       si.style.display = 'none';
-      se.style.display = 'flex';
+      se.style.display = 'none';
+      grid.style.display = 'grid';
+      grid.replaceChildren(frag);
+    });
+  };
+
+  function reset() {
+    animateHeight(() => {
+      si.style.display = '';
+      se.style.display = 'none';
       grid.style.display = 'none';
       grid.replaceChildren();
     });
-    sub.textContent = 'No emoji found';
-    return;
+    sub.textContent = 'Searches OCR-extracted text in real time';
   }
 
-  sub.textContent = results.length + ' HIT';
-
-  // Build fragment before touching DOM height
-  const STAGGER = 48, MAX_DELAY = 700;
-  const frag = document.createDocumentFragment();
-  results.forEach((r, i) => {
-    const delay = Math.min(i * STAGGER, MAX_DELAY);
-    const a = document.createElement('a');
-    a.className = 'emoji-card';
-    a.href = r.href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-    a.setAttribute('aria-label', (r.label||'絵文字') + ' — LINE STOREで購入');
-    a.style.animationDelay = delay + 'ms';
-    const img = document.createElement('img');
-    img.src = r.imgUrl; img.alt = r.label||'';
-    img.width = 80; img.height = 80;
-    img.loading = 'lazy'; img.decoding = 'async';
-    img.onerror = function(){ a.innerHTML = ERR; };
-    a.appendChild(img);
-    if(r.label) {
-      const lbl = document.createElement('span');
-      lbl.className = 'emoji-lbl'; lbl.textContent = r.label;
-      a.appendChild(lbl);
-    }
-    frag.appendChild(a);
+  let timer = null;
+  let composing = false;
+  inp.addEventListener('compositionstart', () => { composing = true; });
+  inp.addEventListener('compositionend', () => {
+    composing = false;
+    const v = inp.value;
+    clr.classList.toggle('on', v.length > 0);
+    clearTimeout(timer);
+    if(!v.trim()){ reset(); return; }
+    timer = setTimeout(() => window._emojiRender(window._emojiSearch(v)), 180);
   });
-
-  frag.querySelectorAll('.emoji-card').forEach(c => {
-    c.style.transition = 'none';
-    c.style.width      = (window.__emojiCardPx || 62) + 'px';
-    c.style.height     = (window.__emojiCardPx || 62) + 'px';
-    c.style.flexShrink = '0';
-    c.style.flexGrow   = '0';
+  inp.addEventListener('input', function(){
+    const v = this.value;
+    clr.classList.toggle('on', v.length > 0);
+    if(composing) return;
+    clearTimeout(timer);
+    if(!v.trim()){ reset(); return; }
+    timer = setTimeout(() => window._emojiRender(window._emojiSearch(v)), 180);
   });
-  animateHeight(() => {
-    si.style.display = 'none';
-    se.style.display = 'none';
-    grid.style.display = 'grid';
-    grid.replaceChildren(frag);
+  clr.addEventListener('click', () => {
+    inp.value = ''; clr.classList.remove('on');
+    reset(); inp.focus();
   });
-}
-
-function reset() {
-  animateHeight(() => {
-    si.style.display = '';
-    se.style.display = 'none';
-    grid.style.display = 'none';
-    grid.replaceChildren();
-  });
-  sub.textContent = 'Searches OCR-extracted text in real time';
-}
-
-let timer = null;
-let composing = false;
-
-inp.addEventListener('compositionstart', () => { composing = true; });
-inp.addEventListener('compositionend', () => {
-  composing = false;
-  const v = inp.value;
-  clr.classList.toggle('on', v.length > 0);
-  clearTimeout(timer);
-  if(!v.trim()) { reset(); return; }
-  timer = setTimeout(() => render(search(v)), 180);
-});
-
-inp.addEventListener('input', function() {
-  const v = this.value;
-  clr.classList.toggle('on', v.length > 0);
-  if(composing) return;
-  clearTimeout(timer);
-  if(!v.trim()) { reset(); return; }
-  timer = setTimeout(() => render(search(v)), 180);
-});
-
-clr.addEventListener('click', () => {
-  inp.value = ''; clr.classList.remove('on');
-  reset(); inp.focus();
-});
-
 })();
 
-/* ── Starfield ── */
+// STARFIELD
 (function(){
   const canvas = document.getElementById('starfield');
   if(!canvas) return;
@@ -772,70 +743,43 @@ clr.addEventListener('click', () => {
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const t=f*.012; f++;
-    stars.forEach(s=>{ const al=s.a*(.65+.35*Math.sin(t*s.sp*120+s.ph)); ctx.beginPath(); ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${al})`; ctx.fill(); });
+    stars.forEach(s=>{ const al=s.a*(.65+.35*Math.sin(t*s.sp*120+s.ph)); ctx.beginPath(); ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,'+al+')'; ctx.fill(); });
     requestAnimationFrame(draw);
   }
   resize(); gen();
-  window.addEventListener('resize',resize,{passive:true});
+  window.addEventListener('resize', resize, {passive:true});
   draw();
 })();
 
-/* ── Grid morph ── */
+// GRID MORPH
 (function(){
-  const rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const sub=document.getElementById('searchSub');
-  if(sub&&!rm){
-    new MutationObserver(()=>{
-      sub.classList.add('morph-out');
-      requestAnimationFrame(()=>requestAnimationFrame(()=>sub.classList.remove('morph-out')));
-    }).observe(sub,{childList:true,characterData:true,subtree:true});
-  }
+  const sub = document.getElementById('searchSub');
+  if(!sub) return;
+  new MutationObserver(() => {
+    sub.classList.add('morph-out');
+    requestAnimationFrame(() => requestAnimationFrame(() => sub.classList.remove('morph-out')));
+  }).observe(sub, {childList:true, characterData:true, subtree:true});
 })();
 
-/* ── Emoji size control ── */
+// SIZE CONTROL
 (function(){
-  // 全サイズ: grid + repeat(N,1fr) で列数固定（スクロールバー影響なし）
-  const COLS = {sm:14, md:11, lg:8};
-  const GAPS = {sm:'0.3rem', md:'0.4rem', lg:'0.375rem'};
-  const SIZES = {sm:46, md:62, lg:84};
-  const DUR   = 480;
-  const grid  = document.getElementById('emojiGrid');
+  const grid = document.getElementById('emojiGrid');
   if(!grid) return;
-
-  let currentPx = 62;
-  window.__emojiCardPx = currentPx;
-
-  function applyGrid(key){
-    grid.style.display             = 'grid';
-    grid.style.gridTemplateColumns = `repeat(${COLS[key]}, 1fr)`;
-    grid.style.gap                 = GAPS[key];
+  function applyKey(key){
+    grid.setAttribute('data-size', key);
+    const inp = document.getElementById('searchInput');
+    const v = inp ? inp.value : '';
+    if(v && v.trim() && window._emojiSearch && window._emojiRender){
+      window._emojiRender(window._emojiSearch(v));
+    }
   }
-
-  function applySize(px, animate){
-    currentPx = px;
-    window.__emojiCardPx = px;
-    // grid 1fr なので width は不要だが高さのみ aspect-ratio で追従
-    // アニメーション用に明示指定
-    grid.querySelectorAll('.emoji-card').forEach(c => {
-      c.style.transition = animate
-        ? `width ${DUR}ms cubic-bezier(0.4,0,0.2,1), height ${DUR}ms cubic-bezier(0.4,0,0.2,1)`
-        : 'none';
-      c.style.width  = '';   // grid 1fr に任せる
-      c.style.height = '';
-    });
-  }
-
-  // 初期
-  applyGrid('md');
-
-  document.querySelectorAll('.size-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
+  applyKey('md');
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
       if(btn.classList.contains('active')) return;
-      document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const key = btn.dataset.size;
-      applyGrid(key);
-      applySize(SIZES[key], true);
+      applyKey(btn.dataset.size);
     });
   });
 })();
