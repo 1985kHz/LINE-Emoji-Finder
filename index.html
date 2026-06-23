@@ -389,7 +389,7 @@ html.theme-switching .orb, html.theme-switching .starfield,
 html.theme-switching .emoji-card, html.theme-switching .emoji-card img { transition: none !important; }
 .header-right { display:flex !important; align-items:center !important; flex-wrap:nowrap !important; gap:4px !important; }
 .size-theme-sep { width:30px; flex-shrink:0; }
-:root { --primary:#1e9790 !important; --primary-dim:rgba(30,151,144,0.12) !important; --glass:rgba(255,255,255,0.62) !important; --inp-bg:rgba(255,255,255,0.72) !important; --card-min:62px; }
+:root { --primary:#1e9790 !important; --primary-dim:rgba(30,151,144,0.12) !important; --glass:rgba(255,255,255,0.62) !important; --inp-bg:rgba(255,255,255,0.72) !important; }
 [data-theme="dark"] { --primary:#26b5ad !important; --primary-dim:rgba(38,181,173,0.14) !important; --glass:rgba(30,32,48,0.68) !important; --inp-bg:rgba(30,32,48,0.72) !important; }
 header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -webkit-backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; border-bottom:1px solid rgba(255,255,255,0.55) !important; box-shadow:0 8px 32px rgba(120,140,175,0.14),inset 0 1px 0 rgba(255,255,255,0.72) !important; }
 [data-theme="dark"] header { border-bottom:1px solid rgba(255,255,255,0.10) !important; box-shadow:0 8px 32px rgba(0,0,0,0.38),inset 0 1px 0 rgba(255,255,255,0.08) !important; }
@@ -411,15 +411,17 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 @keyframes breathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.88)} }
 .search-sub { transition:opacity .18s ease,transform .18s cubic-bezier(0.16,1,0.3,1) !important; }
 .search-sub.morph-out { opacity:0;transform:translateY(4px); }
-.emoji-card { overflow:hidden; aspect-ratio:1; flex-shrink:0; flex-grow:0; width:62px; height:62px;
-  transition:transform .32s cubic-bezier(0.16,1,0.3,1),box-shadow .32s cubic-bezier(0.16,1,0.3,1),background .32s cubic-bezier(0.16,1,0.3,1),filter .32s ease,width 480ms cubic-bezier(0.4,0,0.2,1),height 480ms cubic-bezier(0.4,0,0.2,1) !important; }
+/* emoji-card: grid 1fr で幅は自動。aspect-ratio:1 で正方形維持 */
+.emoji-card { overflow:hidden; aspect-ratio:1; width:auto; height:auto;
+  transition:transform .32s cubic-bezier(0.16,1,0.3,1),box-shadow .32s cubic-bezier(0.16,1,0.3,1),background .32s cubic-bezier(0.16,1,0.3,1),filter .32s ease !important; }
 .emoji-card::before { display:none !important; }
 .emoji-card:hover { transform:translateY(-3px) scale(1.05) !important; filter:brightness(1.05) drop-shadow(0 6px 14px rgba(30,151,144,0.20)) !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.80),0 8px 22px rgba(30,151,144,.14),0 2px 6px rgba(30,151,144,.08) !important; background:var(--glass) !important; z-index:3; }
 [data-theme="dark"] .emoji-card:hover { filter:brightness(1.08) drop-shadow(0 6px 14px rgba(38,181,173,.28)) !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 22px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.22) !important; }
 .emoji-card:active { transform:translateY(-1px) scale(1.02) !important; }
 .emoji-card img { width:100%;height:100%;object-fit:contain;padding:0.5rem; transition:transform .35s cubic-bezier(0.16,1,0.3,1) !important; }
 .emoji-card:hover img { transform:scale(1.06) translateY(-2px) !important; }
-#emojiGrid { display:flex !important; flex-wrap:wrap !important; gap:0.5rem !important; }
+/* grid は JS で設定。CSS !important は初期値のみ */
+#emojiGrid { display:grid !important; grid-template-columns:repeat(11,1fr) !important; gap:0.4rem !important; }
 @keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .results-card { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .10s both; }
 .site-footer  { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .18s both; }
@@ -713,7 +715,7 @@ function render(results) {
   animateHeight(() => {
     si.style.display = 'none';
     se.style.display = 'none';
-    grid.style.display = 'flex';
+    grid.style.display = 'grid';
     grid.replaceChildren(frag);
   });
 }
@@ -792,8 +794,10 @@ clr.addEventListener('click', () => {
 
 /* ── Emoji size control ── */
 (function(){
-  const SIZES = {sm:44, md:60, lg:84};
-  const GAPS  = {sm:'0.5rem', md:'0.5rem', lg:'0.375rem'};
+  // 全サイズ: grid + repeat(N,1fr) で列数固定（スクロールバー影響なし）
+  const COLS = {sm:14, md:11, lg:8};
+  const GAPS = {sm:'0.3rem', md:'0.4rem', lg:'0.375rem'};
+  const SIZES = {sm:46, md:62, lg:84};
   const DUR   = 480;
   const grid  = document.getElementById('emojiGrid');
   if(!grid) return;
@@ -801,19 +805,28 @@ clr.addEventListener('click', () => {
   let currentPx = 62;
   window.__emojiCardPx = currentPx;
 
+  function applyGrid(key){
+    grid.style.display             = 'grid';
+    grid.style.gridTemplateColumns = `repeat(${COLS[key]}, 1fr)`;
+    grid.style.gap                 = GAPS[key];
+  }
+
   function applySize(px, animate){
     currentPx = px;
     window.__emojiCardPx = px;
+    // grid 1fr なので width は不要だが高さのみ aspect-ratio で追従
+    // アニメーション用に明示指定
     grid.querySelectorAll('.emoji-card').forEach(c => {
       c.style.transition = animate
         ? `width ${DUR}ms cubic-bezier(0.4,0,0.2,1), height ${DUR}ms cubic-bezier(0.4,0,0.2,1)`
         : 'none';
-      c.style.width      = px + 'px';
-      c.style.height     = px + 'px';
-      c.style.flexShrink = '0';
-      c.style.flexGrow   = '0';
+      c.style.width  = '';   // grid 1fr に任せる
+      c.style.height = '';
     });
   }
+
+  // 初期
+  applyGrid('md');
 
   document.querySelectorAll('.size-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -821,7 +834,7 @@ clr.addEventListener('click', () => {
       document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       const key = btn.dataset.size;
-      grid.style.gap = GAPS[key];
+      applyGrid(key);
       applySize(SIZES[key], true);
     });
   });
