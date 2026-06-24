@@ -140,11 +140,11 @@ header{
   margin-inline:auto;
   padding:0.875rem 1.5rem;
   display:grid;
-  grid-template-columns:1fr auto 1fr;
+  grid-template-columns:auto 1fr auto;
   align-items:center;
 }
 .header-logo{
-  grid-column:2;justify-self:center;
+  grid-column:1;justify-self:start;
   display:flex;align-items:center;gap:0.5rem;
   text-decoration:none;color:var(--text);
 }
@@ -152,6 +152,11 @@ header{
 .logo-name{
   font-size:0.75rem;font-weight:600;
   letter-spacing:0.08em;color:var(--text);
+}
+.logo-icon{
+  width:20px;height:20px;
+  display:block;
+  flex-shrink:0;
 }
 .header-right{grid-column:3;justify-self:end}
 .icon-btn{
@@ -325,21 +330,7 @@ header{
 /* FOOTER — replaced by .site-footer */
 footer{display:none}
 
-/* EXPERIMENTAL BADGE */
-.header-left{grid-column:1;justify-self:start}
-.exp-badge{
-  display:inline-flex;align-items:center;gap:0.25rem;
-  font-size:0.5625rem;font-weight:600;letter-spacing:0.09em;
-  text-transform:uppercase;
-  color:var(--text-3);
-  background:var(--accent-soft);
-  border:1px solid rgba(128,128,128,0.20);
-  border-radius:var(--r-full);
-  padding:0.125rem 0.5rem;
-  line-height:1.4;
-  vertical-align:middle;
-  user-select:none;
-}
+
 
 /* SITE FOOTER */
 .site-footer{
@@ -419,6 +410,11 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 #emojiGrid[data-size="sm"] { grid-template-columns:repeat(14,1fr) !important; gap:0.3rem !important; }
 #emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(11,1fr) !important; gap:0.4rem !important; }
 #emojiGrid[data-size="lg"] { grid-template-columns:repeat(8,1fr) !important; gap:0.375rem !important; }
+@media (max-width: 600px) {
+  #emojiGrid[data-size="sm"] { grid-template-columns:repeat(6,1fr) !important; gap:0.25rem !important; }
+  #emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(5,1fr) !important; gap:0.3rem !important; }
+  #emojiGrid[data-size="lg"] { grid-template-columns:repeat(4,1fr) !important; gap:0.35rem !important; }
+}
 @keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .results-card { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .10s both; }
 .site-footer  { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .18s both; }
@@ -460,16 +456,9 @@ header,.page{position:relative;z-index:1}
 
 <header>
   <div class="header-inner">
-    <div class="header-left">
-      <span class="exp-badge" title="This is an experimental prototype">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 3h6M9 3v8l-4 9h14l-4-9V3"/>
-          <path d="M9 11h6"/>
-        </svg>
-        Experimental
-      </span>
-    </div>
+
     <div class="header-logo">
+      <img src="./favicon.png" alt="" class="logo-icon" width="20" height="20">
       <span class="logo-name">LINE EMOJI FINDER</span>
     </div>
     <div class="header-right">
