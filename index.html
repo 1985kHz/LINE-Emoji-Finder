@@ -56,6 +56,7 @@
 
   --font: 'DM Sans', system-ui, sans-serif;
   --max-w: 820px;
+  --header-h: 52px;
 }
 [data-theme="dark"] {
   --bg:           #13161e;
@@ -128,7 +129,7 @@ a,button{transition:color var(--dur) var(--ease),background var(--dur) var(--eas
 
 /* ─── HEADER ─────────────────────────── */
 header{
-  position:fixed;top:0;left:0;right:0;z-index:200;
+  position:sticky;top:0;z-index:100;
   background:var(--glass);
   backdrop-filter:blur(40px) saturate(2.0);
   -webkit-backdrop-filter:blur(40px) saturate(2.0);
@@ -176,7 +177,7 @@ header{
 .page{
   max-width:var(--max-w);
   margin-inline:auto;
-  padding:calc(clamp(2rem,5vw,3rem) + 52px) 1.5rem clamp(2rem,5vw,4rem);
+  padding:calc(clamp(2rem,5vw,3rem) + var(--header-h)) 1.5rem clamp(2rem,5vw,4rem);
   display:flex;flex-direction:column;gap:1rem;
 }
 
@@ -357,7 +358,10 @@ footer{display:none}
 
 /* RESPONSIVE */
 @media(max-width:600px){
-  .page{padding:1.25rem 1rem 3rem}
+  .page{padding:calc(1.25rem + var(--header-h)) 1rem 3rem}
+  #emojiGrid[data-size="sm"] { grid-template-columns:repeat(6,1fr) !important; gap:0.25rem !important; }
+  #emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(5,1fr) !important; gap:0.3rem !important; }
+  #emojiGrid[data-size="lg"] { grid-template-columns:repeat(4,1fr) !important; gap:0.35rem !important; }
   .emoji-grid{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:0.5rem}
   .header-inner{padding:0.75rem 1rem}
 }
@@ -411,11 +415,6 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 #emojiGrid[data-size="sm"] { grid-template-columns:repeat(14,1fr) !important; gap:0.3rem !important; }
 #emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(11,1fr) !important; gap:0.4rem !important; }
 #emojiGrid[data-size="lg"] { grid-template-columns:repeat(8,1fr) !important; gap:0.375rem !important; }
-@media (max-width: 600px) {
-  #emojiGrid[data-size="sm"] { grid-template-columns:repeat(6,1fr) !important; gap:0.25rem !important; }
-  #emojiGrid[data-size="md"], #emojiGrid:not([data-size]) { grid-template-columns:repeat(5,1fr) !important; gap:0.3rem !important; }
-  #emojiGrid[data-size="lg"] { grid-template-columns:repeat(4,1fr) !important; gap:0.35rem !important; }
-}
 @keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .results-card { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .10s both; }
 .site-footer  { animation:fade-up .60s cubic-bezier(0.16,1,0.3,1) .18s both; }
@@ -457,7 +456,6 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 
 <header>
   <div class="header-inner">
-
     <button class="header-logo" id="logoBtn" aria-label="Back to Top">
       <img src="./favicon.png" alt="" class="logo-icon" width="20" height="20">
       <span class="logo-name">LINE EMOJI FINDER</span>
