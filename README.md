@@ -24,4 +24,4 @@ OCR is applied to several hundred LINE emojis published by creators the author f
 
 ## License
 
-© 2026 [@]\_\_kHz\_\_](https://x.com/__kHz__) — [MIT License](https://opensource.org/licenses/MIT)
+© 2026 [@\_\_kHz\_\_](https://x.com/__kHz__) — [MIT License](https://opensource.org/licenses/MIT)
