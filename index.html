@@ -102,7 +102,6 @@
 html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
 body{
   min-height:100dvh;
-  padding-top:52px;
   font-family:var(--font);
   font-size:clamp(1rem,0.84rem+0.2vw,1rem);
   color:var(--text);
@@ -434,7 +433,7 @@ header { backdrop-filter:blur(48px) saturate(2.5) brightness(1.06) !important; -
 @keyframes orb2{0%{transform:translate(0,0) scale(1);opacity:.76}40%{transform:translate(-9vw,-10vh) scale(1.11);opacity:.92}75%{transform:translate(-13vw,-6vh) scale(.93);opacity:.74}100%{transform:translate(-8vw,-12vh) scale(1.07);opacity:.88}}
 @keyframes orb3{0%{transform:translate(0,0) scale(1) rotate(0deg);opacity:.74}50%{transform:translate(-8vw,9vh) scale(1.15) rotate(14deg);opacity:.92}100%{transform:translate(9vw,-8vh) scale(.88) rotate(-11deg);opacity:.78}}
 @keyframes orb4{0%{transform:translate(0,0) scale(1);opacity:.70}45%{transform:translate(7vw,11vh) scale(1.18);opacity:.88}100%{transform:translate(-7vw,7vh) scale(.92);opacity:.72}}
-header,.page{position:relative;z-index:1}
+.page{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){.fluid-orbs{display:none}}
 .starfield { position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 0.8s ease; }
 [data-theme="dark"] .starfield { opacity:1; }
